@@ -21,12 +21,11 @@ struct PerspectiveCamera {
     struct ViewProj view_proj;
     vec3s position, direction, up, right;
     f32 pitch, yaw, fov, aspect, znear, zfar;
+    f32 theta, fa;
 };
 
 void perspective_camera_init(struct PerspectiveCamera *self, f32 fov);
 void perspective_camera_update(struct PerspectiveCamera *self);
-
-void ortho_camera_init(struct OrthoCamera *self, vec2s min, vec2s max);
-void ortho_camera_update(struct OrthoCamera *self);
+void perspective_camera_look_at(struct PerspectiveCamera *self, vec3s target);
 
 #endif

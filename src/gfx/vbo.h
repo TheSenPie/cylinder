@@ -18,4 +18,6 @@ void vbo_bind(struct VBO self);
 
 void vbo_buffer(struct VBO self, void *data, size_t offset, size_t count);
 
+void vbo_buffer_full(struct VBO self, void *vertices, void *normals, void *colors);
+
 #endif

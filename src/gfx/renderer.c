@@ -12,6 +12,15 @@ void renderer_init(struct Renderer *self) {
         }
     );
 
+    self->shaders[SHADER_BASIC_SHADED] = shader_create(
+        "res/shaders/basic_shaded.vs", "res/shaders/basic_shaded.fs",
+        1, (struct VertexAttr[]) {
+            { .index = 0, .name = "aPos" },
+            { .index = 1, .name = "aNormal" },
+            { .index = 2, .name = "aColor" }
+        }
+    );
+
     self->vao = vao_create();
     self->vbo = vbo_create(GL_ARRAY_BUFFER, false);
     self->ibo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, false);
@@ -102,4 +111,76 @@ void renderer_quad_color(
     vao_bind(self->vao);
     vbo_bind(self->ibo);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) 0);
+}
+
+void renderer_cube_color(struct Renderer *self, mat4s model) {
+    renderer_use_shader(self, SHADER_BASIC_SHADED);
+    renderer_set_view_proj(self);
+    shader_uniform_mat4(self->shader, "m", model);
+    shader_uniform_vec3(self->shader, "lightColor", (vec3s) {{1.0f, 1.0f, 1.0f}});
+    shader_uniform_vec3(self->shader, "lightPos", (vec3s) {{1.2f, 1.0f, 2.0f}});
+
+    // vertex position array
+    GLfloat vertices[]  = {
+        // position         // normal   // color
+        .5f, .5f, .5f,      0, 0, 1,    1, 1, 1,   
+        -.5f, .5f, .5f,     0, 0, 1,    1, 1, 0,   
+        -.5f,-.5f, .5f,     0, 0, 1,    1, 0, 0,   
+        .5f,-.5f, .5f,      0, 0, 1,    1, 0, 1,
+        // v0,v1,v2,v3 (front)
+        
+        // position         // normal   // color
+        .5f, .5f, .5f,      1, 0, 0,    1, 1, 1,   
+        .5f,-.5f, .5f,      1, 0, 0,    1, 0, 1,   
+        .5f,-.5f,-.5f,      1, 0, 0,    0, 0, 1,   
+        .5f, .5f,-.5f,      1, 0, 0,    0, 1, 1,  
+        // v0,v3,v4,v5 (right)
+        
+        // position         // normal   // color
+        .5f, .5f, .5f,      0, 1, 0,    1, 1, 1,   
+        .5f, .5f,-.5f,      0, 1, 0,    0, 1, 1,   
+        -.5f, .5f,-.5f,     0, 1, 0,    0, 1, 0,   
+        -.5f, .5f, .5f,     0, 1, 0,    1, 1, 0,  
+        // v0,v5,v6,v1 (top)
+
+        // position         // normal   // color
+        -.5f, .5f, .5f,     -1, 0, 0,   1, 1, 0,   
+        -.5f, .5f,-.5f,     -1, 0, 0,   0, 1, 0,   
+        -.5f,-.5f,-.5f,     -1, 0, 0,   0, 0, 0,   
+        -.5f,-.5f, .5f,     -1, 0, 0,   1, 0, 0,  
+        // v1,v6,v7,v2 (left)
+
+        // position         // normal   // color
+        -.5f,-.5f,-.5f,     0,-1, 0,    0, 0, 0,   
+        .5f,-.5f,-.5f,      0,-1, 0,    0, 0, 1,   
+        .5f,-.5f, .5f,      0,-1, 0,    1, 0, 1,   
+        -.5f,-.5f, .5f,     0,-1, 0,    1, 0, 0,  
+        // v7,v4,v3,v2 (bottom)
+
+        // position         // normal   // color
+        .5f,-.5f,-.5f,      0, 0,-1,    0, 0, 1,   
+        -.5f,-.5f,-.5f,     0, 0,-1,    0, 0, 0,   
+        -.5f, .5f,-.5f,     0, 0,-1,    0, 1, 0,   
+        .5f, .5f,-.5f,      0, 0,-1,    0, 1, 1,
+        // v4,v7,v6,v5 (back)
+    };
+
+    vbo_buffer(self->vbo, vertices, 0, (9 * 4 * 6) * sizeof(f32));
+
+    vbo_buffer(self->ibo, (u32[]) {
+         0, 1, 2,   2, 3, 0,    // v0-v1-v2, v2-v3-v0 (front)
+         4, 5, 6,   6, 7, 4,    // v0-v3-v4, v4-v5-v0 (right)
+         8, 9,10,  10,11, 8,    // v0-v5-v6, v6-v1-v0 (top)
+        12,13,14,  14,15,12,    // v1-v6-v7, v7-v2-v1 (left)
+        16,17,18,  18,19,16,    // v7-v4-v3, v3-v2-v7 (bottom)
+        20,21,22,  22,23,20     // v4-v7-v6, v6-v5-v4 (back)
+    }, 0, 36 * sizeof(u32));
+
+    vao_attr(self->vao, self->vbo, 0, 3, GL_FLOAT, 9 * sizeof(GLfloat), 0);
+    vao_attr(self->vao, self->vbo, 1, 3, GL_FLOAT, 9 * sizeof(GLfloat), (3 * sizeof(GLfloat)));
+    vao_attr(self->vao, self->vbo, 2, 3, GL_FLOAT, 9 * sizeof(GLfloat), (6 * sizeof(GLfloat)));
+
+    vao_bind(self->vao);
+    vbo_bind(self->ibo);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void *) 0);
 }
