@@ -19,11 +19,6 @@ enum ShaderType {
 
 #define CAMERA_STACK_MAX 256
 
-enum RenderPass {
-    PASS_2D,
-    PASS_3D
-};
-
 struct Renderer {
     enum CameraType camera_type;
     struct {
@@ -51,7 +46,7 @@ struct Renderer {
 void renderer_init(struct Renderer *self);
 void renderer_destroy(struct Renderer *self);
 void renderer_update(struct Renderer *self);
-void renderer_prepare(struct Renderer *self, enum RenderPass pass);
+void renderer_prepare(struct Renderer *self);
 void renderer_set_camera(struct Renderer *self, enum CameraType type);
 void renderer_push_camera(struct Renderer *self);
 void renderer_pop_camera(struct Renderer *self);

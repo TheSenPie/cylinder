@@ -19,7 +19,6 @@ void shader_destroy(struct Shader self);
 void shader_bind(struct Shader self);
 void shader_uniform_mat4(struct Shader self, char *name, mat4s m);
 void shader_uniform_view_proj(struct Shader self, struct ViewProj view_proj);
-void shader_uniform_texture2D(struct Shader self, char *name, struct Texture texture, GLuint n);
 void shader_uniform_float(struct Shader self, char *name, f32 f);
 void shader_uniform_vec2(struct Shader self, char *name, vec2s v);
 void shader_uniform_vec3(struct Shader self, char *name, vec3s v);

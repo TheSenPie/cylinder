@@ -37,7 +37,7 @@ static GLint _compile(char *path, GLenum type) {
     fclose(f);
 
     GLuint handle = glCreateShader(type);
-    glShaderSource(handle,1, (const GLchar *const *) &text, (const GLint *) &len);
+    glShaderSource(handle, 1, (const GLchar *const *) &text, (const GLint *) &len);
     glCompileShader(handle);
 
     GLint compiled;
@@ -100,12 +100,6 @@ void shader_uniform_view_proj(struct Shader self, struct ViewProj view_proj) {
     shader_uniform_mat4(self, "p", view_proj.proj);
     shader_uniform_mat4(self, "v", view_proj.view);
 }
-
-// void shader_uniform_texture2D(struct Shader self, char *name, struct Texture texture, GLuint n) {
-//     glActiveTexture(GL_TEXTURE0 + n);
-//     texture_bind(texture);
-//     glUniform1i(glGetUniformLocation(self.handle, (const GLchar *) name), n);
-// }
 
 void shader_uniform_float(struct Shader self, char *name, f32 f) {
     glUniform1f(glGetUniformLocation(self.handle, name), f);

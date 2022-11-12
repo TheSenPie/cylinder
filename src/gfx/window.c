@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// settings
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
+
 // global window
 struct Window window;
 
@@ -80,10 +84,13 @@ void window_create(FWindow init, FWindow destroy, FWindow tick,  FWindow update,
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
-    window.size = (ivec2s) {{1280, 720}};
-    window.handle = glfwCreateWindow(window.size.x, window.size.y, "Project", NULL, NULL);
+    window.size = (ivec2s) {{SCR_WIDTH, SCR_HEIGHT}};
+    window.handle = glfwCreateWindow(window.size.x, window.size.y, "Cylinder", NULL, NULL);
     if (window.handle == NULL) {
         fprintf(stderr, "%s",  "error creating window\n");
         glfwTerminate();
