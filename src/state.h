@@ -8,6 +8,7 @@
 
 struct State {
     struct Window *window;
+    struct World world;
     struct Renderer renderer;
     size_t ticks;
 };

@@ -1,4 +1,5 @@
 #include "gfx/window.h"
+#include "world/world.h"
 #include "gfx/gfx.h"
 
 #include "state.h"
@@ -9,6 +10,7 @@ struct State state;
 void init() {
 	state.window = &window;
 	renderer_init(&state.renderer);
+	world_init(&state.world);
 	mouse_set_grabbed(true);
 }
 
@@ -21,12 +23,16 @@ void tick() {
 }
 
 void update() {
+	state.world.light.position.x = sin(glfwGetTime()) * 2.0f;;
+	state.world.light.position.z = cos(glfwGetTime()) * 2.0f;
+	state.world.light.position.y = 0;
+
 	if (state.window->mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down) {
 		state.renderer.perspective_camera.theta -= state.window->mouse.delta.x * 0.01f;
 		state.renderer.perspective_camera.fa += state.window->mouse.delta.y * 0.01f;
 		state.renderer.perspective_camera.fa = clamp(state.renderer.perspective_camera.fa, F32_EPSILON, PI - F32_EPSILON);
 
-		perspective_camera_look_at(&state.renderer.perspective_camera, (vec3s) {{0.0f, 0.0f, 0.0f, 0.0f}});
+		perspective_camera_look_at(&state.renderer.perspective_camera, (vec3s) {{0.0f, 0.0f, 0.0f}});
 	}
 	
     // wireframe toggle (T)
@@ -42,12 +48,14 @@ void update() {
 
 void render() {
 	renderer_prepare(&state.renderer);
-	mat4s model = GLMS_MAT4_IDENTITY;
-	// model = glms_translate_z(model, 2);
-	// model = glms_rotate_x(model, state.ticks / 100.0);
-	// model = glms_rotate_y(model, state.ticks / 100.0);
-	// renderer_quad_color(&state.renderer, (vec2s){{1.0f, 1.0f}} ,(vec4s){{1.0f, 0.0f, 0.0f, 1.0f}}, model);
-    renderer_cube_color(&state.renderer, model);
+	mat4s cube_model = GLMS_MAT4_IDENTITY;
+	cube_model = glms_translate(cube_model, state.world.cube.position);
+	renderer_cube_color(&state.renderer, cube_model, state.world.light.position, SHADER_BASIC_SHADED);
+
+	mat4s light_model = GLMS_MAT4_IDENTITY;
+	light_model = glms_translate(light_model, state.world.light.position);
+	light_model = glms_scale_uni(light_model, 0.3f);
+	renderer_cube_color(&state.renderer, light_model, state.world.light.position, SHADER_LIGHT_CUBE);
 }
 
 int main(int argc, char *argv[]) {

@@ -9,9 +9,9 @@ void perspective_camera_init(struct PerspectiveCamera *self, f32 fov) {
     self->aspect = ((f32) window.size.x) / ((f32) window.size.y);
     self->znear = 0.01f;
     self->zfar = 1000.0f;
-    self->theta = 0;
-    self->fa = 0;
-    perspective_camera_update(self);
+    self->theta = M_PI_4;
+    self->fa = M_PI_4;
+    perspective_camera_look_at(self, glms_vec3_zero());
 }
 
 void perspective_camera_update(struct PerspectiveCamera *self) {

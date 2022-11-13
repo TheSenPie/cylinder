@@ -21,6 +21,15 @@ void renderer_init(struct Renderer *self) {
         }
     );
 
+    self->shaders[SHADER_LIGHT_CUBE] = shader_create(
+        "res/shaders/light_cube.vs", "res/shaders/light_cube.fs",
+        1, (struct VertexAttr[]) {
+            { .index = 0, .name = "aPos" },
+            { .index = 1, .name = "aNormal" },
+            { .index = 2, .name = "aColor" }
+        }
+    );
+
     self->vao = vao_create();
     self->vbo = vbo_create(GL_ARRAY_BUFFER, false);
     self->ibo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, false);
@@ -113,12 +122,12 @@ void renderer_quad_color(
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) 0);
 }
 
-void renderer_cube_color(struct Renderer *self, mat4s model) {
-    renderer_use_shader(self, SHADER_BASIC_SHADED);
+void renderer_cube_color(struct Renderer *self, mat4s model, vec3s light_pos, enum ShaderType shader) {
+    renderer_use_shader(self, shader);
     renderer_set_view_proj(self);
     shader_uniform_mat4(self->shader, "m", model);
     shader_uniform_vec3(self->shader, "lightColor", (vec3s) {{1.0f, 1.0f, 1.0f}});
-    shader_uniform_vec3(self->shader, "lightPos", (vec3s) {{1.2f, 1.0f, 2.0f}});
+    shader_uniform_vec3(self->shader, "lightPos", light_pos);
 
     // vertex position array
     GLfloat vertices[]  = {
