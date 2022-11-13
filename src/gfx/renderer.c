@@ -125,6 +125,10 @@ void renderer_quad_color(
 }
 
 void renderer_cube_color(struct Renderer *self, mat4s model, vec3s light_pos, enum ShaderType shader) {
+    vao_bind(self->vao);
+    vbo_bind(self->vbo);
+    vbo_bind(self->ibo);
+
     renderer_use_shader(self, shader);
     renderer_set_view_proj(self);
     shader_uniform_mat4(self->shader, "m", model);
@@ -191,27 +195,29 @@ void renderer_cube_color(struct Renderer *self, mat4s model, vec3s light_pos, en
     vao_attr(self->vao, self->vbo, 1, 3, GL_FLOAT, 9 * sizeof(GLfloat), (3 * sizeof(GLfloat)));
     vao_attr(self->vao, self->vbo, 2, 3, GL_FLOAT, 9 * sizeof(GLfloat), (6 * sizeof(GLfloat)));
 
-    vao_bind(self->vao);
-    vbo_bind(self->ibo);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void *) 0);
 }
 
 void renderer_cylinder_color(struct Renderer *self, struct Cylinder *cylinder, vec3s light_pos) {
+    vao_bind(self->vao);
+    vbo_bind(self->vbo);
+    vbo_bind(self->ibo);
+
     renderer_use_shader(self, SHADER_BASIC_SHADED);
     renderer_set_view_proj(self);
     shader_uniform_mat4(self->shader, "m", GLMS_MAT4_IDENTITY);
     shader_uniform_vec3(self->shader, "lightColor", (vec3s) {{1.0f, 1.0f, 1.0f}});
     shader_uniform_vec3(self->shader, "lightPos", light_pos);
-    
-    vbo_buffer(self->vbo, cylinder->vertices, 0, cylinder->vertices_size);
 
-    vbo_buffer(self->ibo, cylinder->indices, 0, cylinder->indices_size);
+    // printf("AAAAAAA: %d\n", cylinder->vertices_size);
+    vbo_buffer(self->vbo, cylinder->vertices, 0, cylinder->side_vertices_size * sizeof(GLfloat));
+
+    // printf("BBBBBBB: %d\n", cylinder->indices_size);
+    vbo_buffer(self->ibo, cylinder->indices, 0, cylinder->side_indices_size * sizeof(int));
 
     vao_attr(self->vao, self->vbo, 0, 3, GL_FLOAT, 9 * sizeof(GLfloat), 0);
     vao_attr(self->vao, self->vbo, 1, 3, GL_FLOAT, 9 * sizeof(GLfloat), (3 * sizeof(GLfloat)));
     vao_attr(self->vao, self->vbo, 2, 3, GL_FLOAT, 9 * sizeof(GLfloat), (6 * sizeof(GLfloat)));
 
-    vao_bind(self->vao);
-    vbo_bind(self->ibo);
-    glDrawElements(GL_TRIANGLE_STRIP, cylinder->indices_size, GL_UNSIGNED_INT, (void *) 0);
+    glDrawElements(GL_TRIANGLE_STRIP, cylinder->side_indices_size, GL_UNSIGNED_INT, (void *) 0);
 }

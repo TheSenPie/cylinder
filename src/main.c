@@ -56,7 +56,7 @@ void render() {
 	light_model = glms_scale_uni(light_model, 0.3f);
 	renderer_cube_color(&state.renderer, light_model, state.world.light.position, SHADER_LIGHT_CUBE);
 
-	// renderer_cylinder_color(&state.renderer, &state.world.cylinder, state.world.light.position);
+	renderer_cylinder_color(&state.renderer, &state.world.cylinder, state.world.light.position);
 }
 
 int main(int argc, char *argv[]) {

@@ -10,5 +10,5 @@
 void world_init (struct World *self) {
     self->cube = (struct Cube) {GLMS_VEC3_ZERO_INIT};
     self->light = (struct Light) { (vec3s) {{1.2f, 1.0f, 2.0f}} };
-    cylinder_init(&(self->cylinder), 1, 3, 3, 1);
+    cylinder_init(&(self->cylinder), 1, 4, 10000, 1);
 }
