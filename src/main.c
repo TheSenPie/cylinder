@@ -29,10 +29,9 @@ void update() {
 
 	if (state.window->mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down) {
 		state.renderer.perspective_camera.theta -= state.window->mouse.delta.x * 0.01f;
-		state.renderer.perspective_camera.fa += state.window->mouse.delta.y * 0.01f;
-		state.renderer.perspective_camera.fa = clamp(state.renderer.perspective_camera.fa, F32_EPSILON, PI - F32_EPSILON);
+		state.renderer.perspective_camera.fi += state.window->mouse.delta.y * 0.01f;
 
-		perspective_camera_look_at(&state.renderer.perspective_camera, (vec3s) {{0.0f, 0.0f, 0.0f}});
+		perspective_camera_look_at(&state.renderer.perspective_camera, state.world.cube.position);
 	}
 	
     // wireframe toggle (T)
@@ -56,6 +55,8 @@ void render() {
 	light_model = glms_translate(light_model, state.world.light.position);
 	light_model = glms_scale_uni(light_model, 0.3f);
 	renderer_cube_color(&state.renderer, light_model, state.world.light.position, SHADER_LIGHT_CUBE);
+
+	// renderer_cylinder_color(&state.renderer, &state.world.cylinder, state.world.light.position);
 }
 
 int main(int argc, char *argv[]) {

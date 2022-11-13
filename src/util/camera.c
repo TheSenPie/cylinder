@@ -9,8 +9,10 @@ void perspective_camera_init(struct PerspectiveCamera *self, f32 fov) {
     self->aspect = ((f32) window.size.x) / ((f32) window.size.y);
     self->znear = 0.01f;
     self->zfar = 1000.0f;
+
+    self->ro = 4;
     self->theta = M_PI_4;
-    self->fa = M_PI_4;
+    self->fi = M_PI_4;
     perspective_camera_look_at(self, glms_vec3_zero());
 }
 
@@ -34,24 +36,18 @@ void perspective_camera_update(struct PerspectiveCamera *self) {
 }
 
 void perspective_camera_look_at(struct PerspectiveCamera *self, vec3s target) {
-    // bound pitch at +- pi/2 and yaw in [0, tau]
-    self->pitch = clamp(self->pitch, -PI_2, PI_2);
-    self->yaw = (self->yaw < 0 ? TAU : 0.0f) + fmodf(self->yaw, TAU);
+    self->position.z = (f32) self->ro * sin(self->fi) * cos(self->theta);
+    self->position.x = (f32) self->ro * sin(self->fi) * sin(self->theta);
+    self->position.y = (f32) self->ro * cos(self->fi);
 
     self->direction = (vec3s) {{
-        cosf(self->pitch) * sinf(self->yaw),
-        sinf(self->pitch),
-        cosf(self->pitch) * cosf(self->yaw)
+        target.x - self->position.x,
+        target.y - self->position.y,
+        target.z - self->position.z,
     }};
     glms_vec3_normalize(self->direction);
-
     self->right = glms_vec3_cross((vec3s) {{ 0.0f, 1.0f, 0.0f }}, self->direction);
     self->up = glms_vec3_cross(self->direction, self->right);
-
-    float radius = 4.0f;
-    self->position.z = (f32) radius * sin(self->fa) * cos(self->theta);
-    self->position.x = (f32) radius * sin(self->fa) * sin(self->theta);
-    self->position.y = (f32) radius * cos(self->fa);
 
     self->view_proj.view = glms_lookat(self->position, target, self->up);
     self->view_proj.proj = glms_perspective(self->fov, self->aspect, self->znear, self->zfar);

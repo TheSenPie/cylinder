@@ -19,5 +19,5 @@ void main() {
     FragPos = vec3(v * m * vec4(aPos, 1.0));
     Normal = mat3(transpose(inverse(v * m))) * aNormal;
     LightPos = vec3(v * vec4(lightPos, 1.0));
-    Color = vec3(0.8, 0.3, 0.5);//aColor;
+    Color = aColor;
 }

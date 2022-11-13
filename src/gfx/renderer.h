@@ -7,6 +7,8 @@
 #include "vao.h"
 #include "vbo.h"
 
+#include "../world/cylinder.h"
+
 enum FillMode {
     FILL_MODE_FILL, FILL_MODE_LINE
 };
@@ -59,5 +61,6 @@ void renderer_quad_color(
     struct Renderer *self, vec2s size,
     vec4s color, mat4s model);
 void renderer_cube_color(struct Renderer *self, mat4s model, vec3s light_pos, enum ShaderType shader);
+void renderer_cylinder_color(struct Renderer *self, struct Cylinder *cylinder, vec3s light_pos);
 
 #endif
