@@ -36,9 +36,9 @@ void perspective_camera_update(struct PerspectiveCamera *self) {
 }
 
 void perspective_camera_look_at(struct PerspectiveCamera *self, vec3s target) {
-    self->position.z = (f32) self->ro * sin(self->fi) * cos(self->theta);
-    self->position.x = (f32) self->ro * sin(self->fi) * sin(self->theta);
-    self->position.y = (f32) self->ro * cos(self->fi);
+    self->position.z = (f32) self->ro * sinf(self->fi) * cosf(self->theta);
+    self->position.x = (f32) self->ro * sinf(self->fi) * sinf(self->theta);
+    self->position.y = (f32) self->ro * cosf(self->fi);
 
     self->direction = (vec3s) {{
         target.x - self->position.x,
