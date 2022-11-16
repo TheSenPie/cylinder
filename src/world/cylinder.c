@@ -46,9 +46,9 @@ void make_top_fan (struct Cylinder *self, f32 radius, f32 height, int N, int *v_
 
     for (; v_idx < *v_offset + self->top_vertices_size; v_idx += 9) {
         f32 x, y, z;
-        x = sin((float) ( (v_idx - 9) / 9) / (float) N * TAU);
+        x = sinf((float) ( (v_idx - 9) / 9) / (float) N * TAU);
         y = 0.5f;
-        z = cos((float) ( (v_idx - 9) / 9) / (float) N * TAU);
+        z = cosf((float) ( (v_idx - 9) / 9) / (float) N * TAU);
 
         f32 r, g, b;
         r = 1;
@@ -104,9 +104,9 @@ void make_bottom_fan (struct Cylinder *self, f32 radius, f32 height, int N, int 
 
     for (; v_idx < *v_offset + self->bottom_vertices_size; v_idx += 9) {
         f32 x, y, z;
-        x = sin((float) ( (v_idx - 9) / 9) / (float) N * TAU);
+        x = sinf((float) ( (v_idx - 9) / 9) / (float) N * TAU);
         y = 0.5f;
-        z = cos((float) ( (v_idx - 9) / 9) / (float) N * TAU);
+        z = cosf((float) ( (v_idx - 9) / 9) / (float) N * TAU);
 
         f32 r, g, b;
         r = 1;
@@ -147,14 +147,14 @@ void make_sides (struct Cylinder *self, f32 radius, f32 height, int N, int S, in
     for (s = 0; s <= S; s++) {
         for (n = N; n >= 0; n -= 1) {
             f32 x, y, z;
-            x = sin((float) n / (float) N * TAU);
+            x = sinf((float) n / (float) N * TAU);
             y = (float) (s / (float) S - 0.5f);
-            z = cos((float) n / (float) N * TAU);
+            z = cosf((float) n / (float) N * TAU);
 
             f32 r, g, b;
-            r = sin(((float) n / (float) N + 0) * TAU);
-            g = sin(((float) n / (float) N + 0.33) * TAU);
-            b = sin(((float) n / (float) N + 0.66) * TAU);
+            r = sinf(((float) n / (float) N + 0) * TAU);
+            g = sinf(((float) n / (float) N + 0.33) * TAU);
+            b = sinf(((float) n / (float) N + 0.66) * TAU);
 
             f32 n_x, n_y, n_z;
             n_x = x;
