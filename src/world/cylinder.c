@@ -92,7 +92,7 @@ void make_bottom_fan (struct Cylinder *self, f32 radius, f32 height, int N, int 
 
     // n_xyz
     self->vertices[v_idx + 3] = 0;
-    self->vertices[v_idx + 4] = 1;
+    self->vertices[v_idx + 4] = -1;
     self->vertices[v_idx + 5] = 0;
 
     // rgb
@@ -115,7 +115,7 @@ void make_bottom_fan (struct Cylinder *self, f32 radius, f32 height, int N, int 
 
         f32 n_x, n_y, n_z;
         n_x = 0;
-        n_y = 1;
+        n_y = -1;
         n_z = 0;
 
         self->vertices[v_idx] = radius * x;
