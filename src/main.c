@@ -25,7 +25,6 @@ void tick() {
 void update() {
 	state.world.light.position.x = sin(glfwGetTime()) * 2.0f;;
 	state.world.light.position.z = cos(glfwGetTime()) * 2.0f;
-	state.world.light.position.y = 0;
 
 	if (state.window->mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down) {
 		state.renderer.perspective_camera.theta -= state.window->mouse.delta.x * 0.01f;

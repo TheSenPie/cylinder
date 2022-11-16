@@ -63,8 +63,8 @@ void renderer_prepare(struct Renderer *self) {
     glPolygonMode(GL_FRONT_AND_BACK, self->flags.wireframe ? GL_LINE : GL_FILL);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -210,14 +210,31 @@ void renderer_cylinder_color(struct Renderer *self, struct Cylinder *cylinder, v
     shader_uniform_vec3(self->shader, "lightPos", light_pos);
 
     // printf("AAAAAAA: %d\n", cylinder->vertices_size);
-    vbo_buffer(self->vbo, cylinder->vertices, 0, cylinder->side_vertices_size * sizeof(GLfloat));
+    int vert_size = cylinder->top_vertices_size + cylinder->bottom_vertices_size + cylinder->side_vertices_size;
+    vbo_buffer(self->vbo, cylinder->vertices, 0, vert_size * sizeof(GLfloat));
 
     // printf("BBBBBBB: %d\n", cylinder->indices_size);
-    vbo_buffer(self->ibo, cylinder->indices, 0, cylinder->side_indices_size * sizeof(int));
+    int ind_size = cylinder->top_indices_size + cylinder->bottom_indices_size + cylinder->side_indices_size;
+    vbo_buffer(self->ibo, cylinder->indices, 0, ind_size * sizeof(int));
 
     vao_attr(self->vao, self->vbo, 0, 3, GL_FLOAT, 9 * sizeof(GLfloat), 0);
     vao_attr(self->vao, self->vbo, 1, 3, GL_FLOAT, 9 * sizeof(GLfloat), (3 * sizeof(GLfloat)));
     vao_attr(self->vao, self->vbo, 2, 3, GL_FLOAT, 9 * sizeof(GLfloat), (6 * sizeof(GLfloat)));
 
-    glDrawElements(GL_TRIANGLE_STRIP, cylinder->side_indices_size, GL_UNSIGNED_INT, (void *) 0);
+    // printf("\n\n");
+    // int n;
+    // for (n = cylinder->top_indices_size + cylinder->bottom_indices_size; n < cylinder->top_indices_size + cylinder->bottom_indices_size + cylinder->side_indices_size; n++) {
+    //     printf("element: %d n: %d\n", cylinder->indices[n], n);
+    // }
+    // printf("\n\n");
+
+    // printf("\n\n");
+    // for (n = cylinder->top_vertices_size + cylinder->bottom_vertices_size; n < cylinder->top_vertices_size + cylinder->bottom_vertices_size + cylinder->side_vertices_size; n += 9) {
+    //     printf("x: %f, y: %f, z: %f n: %d\n", cylinder->vertices[n], cylinder->vertices[n + 1], cylinder->vertices[n + 2], n / 9);
+    // }
+    // printf("\n\n");
+
+    glDrawElements(GL_TRIANGLE_FAN, cylinder->top_indices_size, GL_UNSIGNED_INT, (void *) 0);
+    glDrawElements(GL_TRIANGLE_FAN, cylinder->bottom_indices_size, GL_UNSIGNED_INT, (void *) (cylinder->top_indices_size * sizeof(int)));
+    glDrawElements(GL_TRIANGLE_STRIP, cylinder->side_indices_size, GL_UNSIGNED_INT, (void *) ((cylinder->top_indices_size + cylinder->bottom_indices_size) * sizeof(int)));
 }

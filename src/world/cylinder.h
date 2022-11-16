@@ -14,16 +14,19 @@ struct Cylinder {
     int S; // number of stacks
     int N; // number of sectors
     
-    size_t side_vertices_size;
-    size_t side_indices_size;
-    size_t top_vertices_size;
-    size_t top_indices_size;
-    size_t bottom_vertices_size;
-    size_t bottom_indices_size;
+    int side_vertices_size;
+    int side_indices_size;
+    int top_vertices_size;
+    int top_indices_size;
+    int bottom_vertices_size;
+    int bottom_indices_size;
 
     float *vertices;
     int *indices;
 };
 
-void cylinder_init (struct Cylinder *self, f32 radius, f32 height, size_t N, size_t S);
+void cylinder_init (struct Cylinder *self, f32 radius, f32 height, int N, int S);
+void make_top_fan (struct Cylinder *self, f32 radius, f32 height, int N, int *v_offset, int *i_offset);
+void make_bottom_fan (struct Cylinder *self, f32 radius, f32 height, int N, int *v_offset, int *i_offset);
+void make_sides (struct Cylinder *self, f32 radius, f32 height, int N, int S, int *v_offset, int *i_offset);
 #endif

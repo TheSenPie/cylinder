@@ -10,7 +10,7 @@ void perspective_camera_init(struct PerspectiveCamera *self, f32 fov) {
     self->znear = 0.01f;
     self->zfar = 1000.0f;
 
-    self->ro = 4;
+    self->ro = 6;
     self->theta = M_PI_4;
     self->fi = M_PI_4;
     perspective_camera_look_at(self, glms_vec3_zero());
